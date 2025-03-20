@@ -1,10 +1,10 @@
 <p align="center">
   <img src="assets/parchment.webp" width="150" alt="Parchment Logo">
-</p
+</p>
 
-# Parchment
-A simple printer server for my personnal thermal printer.
 
+<h1 align="center">Parchment</h1>
+<p align="center">🖨️ A minimalist receipt printing server built with Go.</p>
 
 ## 🛠️ Installation
 
