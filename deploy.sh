@@ -9,12 +9,12 @@ SERVICE_PATH="/etc/systemd/system/${SERVICE_NAME}.service"
 
 
 echo "🚀 Deploying ${SERVICE_NAME} to Raspberry Pi (${HOST})..."
-rsync -avz --exclude '.git' --exclude 'deploy.sh' . ${PI_SERVER_ADDR}:${DEPLOY_DIR}
+rsync -avz --exclude '.git' --exclude 'deploy.sh' --exclude 'assets' . ${PI_SERVER_ADDR}:${DEPLOY_DIR}
 
 
 
 echo "🚀 Updating ${SERVICE_NAME} systemd service"
-ssh ${PI_SERVER_ADDR} << EOF
+ssh -q -T ${PI_SERVER_ADDR} << EOF
     # Add Go to the system PATH
     export PATH=\$PATH:/home/pi/.local/share/go/bin/
 		

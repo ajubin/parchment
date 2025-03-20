@@ -1,6 +1,18 @@
-# Parchment
+<p align="center">
+  <img src="assets/parchment.webp" width="150" alt="Parchment Logo">
+</p
 
+# Parchment
 A simple printer server for my personnal thermal printer.
+
+
+## 🛠️ Installation
+
+```bash
+git clone https://github.com/your-username/parchment.git
+cd parchment
+go build -o parchment main.go
+```
 
 ## Development
 
