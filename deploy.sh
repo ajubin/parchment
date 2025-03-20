@@ -26,9 +26,10 @@ After=network.target
 [Service]
 User=pi
 WorkingDirectory=${DEPLOY_DIR}
-ExecStart=${DEPLOY_DIR}/${SERVICE_NAME}
+ExecStart=${DEPLOY_DIR}/${SERVICE_NAME} --serialPort /dev/ttyS0
 Restart=always
-Environment=\"MODE=prod\"
+# Not needed anymore
+# Environment=\"MODE=prod\"
 
 [Install]
 WantedBy=multi-user.target
