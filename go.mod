@@ -1,4 +1,4 @@
-module printer-server
+module github.com/ajubin/parchment
 
 go 1.24.1
 
