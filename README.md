@@ -11,21 +11,20 @@
 ```bash
 git clone https://github.com/your-username/parchment.git
 cd parchment
-go build -o parchment main.go
 ```
 
 ## Development
 
-If you have no thermal printer, run `export MODE=dev` before running your code.
+Run  `make dev` to start the server in watch mode
 
 ## Deployment
 
 This project is intended to be deployed on my rasbperry pi, and tunneled via cloudlflared with systemctl.
 
 Before deploying into production, protect your route with basic auth.
-To confiure the password, run `cp .env.example .env` and modify `API_USER` and `API_PASSWORD`.
+To configure the password, run `cp .env.example .env` and modify `API_USER` and `API_PASSWORD`.
 
-To deploy, run `./deploy.sh`
+To deploy, run `make deploy`
 
 ## Feature List
 

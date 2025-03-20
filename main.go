@@ -20,7 +20,6 @@ func main() {
 		log.Warn("No basic-auth info provided. In production, provide a --apiUser and --apiToken to protect routes")
 	}
 
-	// TODO: improve this design, pass port name as flag maybe
 	var printer p.Printer
 	if *serialPort == "" {
 		log.Println("Utilisation de l'imprimante en mock")
