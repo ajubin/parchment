@@ -20,7 +20,11 @@ If you have no thermal printer, run `export MODE=dev` before running your code.
 
 ## Deployment
 
-This project is intended to be deployed on my rasbperry pi, and tunneled via cloudlflared with systemctl
+This project is intended to be deployed on my rasbperry pi, and tunneled via cloudlflared with systemctl.
+
+Before deploying into production, protect your route with basic auth.
+To confiure the password, run `cp .env.example .env` and modify `API_USER` and `API_PASSWORD`.
+
 To deploy, run `./deploy.sh`
 
 ## Feature List
@@ -29,5 +33,5 @@ To deploy, run `./deploy.sh`
 - [x] POST /print available 
 - [x] Possibility to run it without a serial printer
 - [x] Prevent content injection on POST /print
-- [ ] Protect routes with a token
+- [x] Protect routes with basic auth
 - [ ] Parse content as markdown

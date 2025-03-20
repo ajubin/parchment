@@ -3,9 +3,9 @@ package printer
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"go.bug.st/serial"
 )
 
@@ -119,7 +119,7 @@ func (p *SerialPrinter) TestPrint() error {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Envoyé %v octets à l'imprimante\n", n)
+	log.Printf("Envoyé %v octets à l'imprimante\n", n)
 
 	// Pause pour éviter d'envoyer trop rapidement
 	time.Sleep(1 * time.Second)

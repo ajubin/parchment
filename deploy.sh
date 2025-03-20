@@ -7,8 +7,10 @@ HOST="192.168.1.97"
 PI_SERVER_ADDR=${USER}@${HOST}
 SERVICE_PATH="/etc/systemd/system/${SERVICE_NAME}.service"
 
-
+source .env
+echo "API USER ${API_USER}"
 echo "🚀 Deploying ${SERVICE_NAME} to Raspberry Pi (${HOST})..."
+
 rsync -avz --exclude '.git' --exclude 'deploy.sh' --exclude 'assets' . ${PI_SERVER_ADDR}:${DEPLOY_DIR}
 
 
@@ -26,7 +28,7 @@ After=network.target
 [Service]
 User=pi
 WorkingDirectory=${DEPLOY_DIR}
-ExecStart=${DEPLOY_DIR}/${SERVICE_NAME} --serialPort /dev/ttyS0
+ExecStart=${DEPLOY_DIR}/${SERVICE_NAME} --serialPort /dev/ttyS0 --apiUser ${API_USER} --apiToken ${API_PASSWORD}
 Restart=always
 # Not needed anymore
 # Environment=\"MODE=prod\"
