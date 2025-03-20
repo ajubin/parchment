@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/parchment.webp" width="150" alt="Parchment Logo">
+  <img src="assets/logo.svg" width="150" alt="Parchment Logo">
 </p>
 
 
