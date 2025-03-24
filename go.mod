@@ -6,6 +6,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/sirupsen/logrus v1.9.3
 	go.bug.st/serial v1.6.3
+	golang.org/x/text v0.23.0
 )
 
 require (

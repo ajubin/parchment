@@ -14,10 +14,25 @@ type SerialPrinter struct {
 	BaudRate int
 }
 
+// Jeux de caractères ESC/POS
+var charsets = [][]byte{
+	{0x1B, 0x74, 0x00}, // Charset 0 - Standard
+	{0x1B, 0x74, 0x01}, // Charset 1 - Alternative
+	{0x1B, 0x74, 0x02}, // Charset 2 - Spécial
+	{0x1B, 0x74, 0x03}, // Charset 3 - Autre
+	{0x1B, 0x74, 0x04}, // Charset 4 - Japonais (Exemple)
+	{0x1B, 0x74, 0x00}, // Often, 0x00 selects CP437 in ESC/POS printers
+
+}
+
 // Implémentation pour envoyer sur l'imprimante série
 func (p *SerialPrinter) Print(buffer bytes.Buffer) error {
 	mode := &serial.Mode{BaudRate: p.BaudRate}
+
 	port, err := serial.Open(p.PortName, mode)
+	// Encoding cp437
+	buffer.Write(charsets[0])
+
 	if err != nil {
 		log.Println("Erreur ouverture port série:", err)
 		return err
@@ -47,15 +62,6 @@ func (p *SerialPrinter) TestPrint() error {
 		setBoldOff    = []byte{0x1B, 0x45, 0x00} // Désactiver le texte en gras
 		newLine       = []byte{0x0A}             // Saut de ligne
 	)
-
-	// Jeux de caractères ESC/POS
-	var charsets = [][]byte{
-		{0x1B, 0x74, 0x00}, // Charset 0 - Standard
-		{0x1B, 0x74, 0x01}, // Charset 1 - Alternative
-		{0x1B, 0x74, 0x02}, // Charset 2 - Spécial
-		{0x1B, 0x74, 0x03}, // Charset 3 - Autre
-		{0x1B, 0x74, 0x04}, // Charset 4 - Japonais (Exemple)
-	}
 
 	mode := &serial.Mode{
 		BaudRate: 9600,

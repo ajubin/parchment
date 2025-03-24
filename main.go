@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// Note, config can be improved with this pattern https://www.kaznacheev.me/posts/en/clean-way-pass-configs-go-application/
-	listenAddr := flag.String("listenaddr", ":8080", "the server address, default ':8080'")
+	listenAddr := flag.String("listenaddr", "localhost:8080", "the server address, default ':8080'")
 	serialPort := flag.String("serialPort", "", "path to the serial port of the printer, eg: /dev/ttyS0. Will use mock printer if nothing provided")
 	apiUser := flag.String("apiUser", "admin", "the user of basic auth to access protected routes, defaults: admin")
 	apiToken := flag.String("apiToken", "admin", "the password of basic auth to access protected routes, defaults: admin")

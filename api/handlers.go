@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/ajubin/parchment/types"
+	"golang.org/x/text/encoding/charmap"
 )
 
 func (s *Server) handleTestPrint(w http.ResponseWriter, r *http.Request) {
@@ -67,10 +68,17 @@ func parseMarkup(content string) bytes.Buffer {
 	var buffer bytes.Buffer
 
 	lines := strings.Split(content, "\n")
+	encoder := charmap.CodePage437.NewEncoder()
 
 	// TODO: add markup parsing (maybe with markdown)
 	for _, line := range lines {
-		buffer.WriteString(line + "\n") // Texte normal
+		encodedLine, err := encoder.String(line)
+		if err != nil {
+			// Handle encoding error here. For simplicity, encoding error is ignored
+			// But in production, consider handling encoding errors properly
+			encodedLine = line // Fallback to original line on error
+		}
+		buffer.WriteString(encodedLine + "\n")
 
 	}
 
