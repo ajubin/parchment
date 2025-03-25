@@ -1,5 +1,5 @@
 
-.PHONY: help run deploy build install dev
+.PHONY: help run deploy build install dev test test-watch
 
 help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -19,3 +19,9 @@ dev-install: ## make sure to install dependencies
 
 dev: dev-install ## run the server in watch mode
 	@gow run main.go
+
+test: ## run test
+	@go test -v ./... 
+
+test-watch: ## run test in watch mode
+	@gow test -v ./... 
