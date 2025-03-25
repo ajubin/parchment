@@ -3,10 +3,12 @@ package printer
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"go.bug.st/serial"
+	"golang.org/x/text/encoding/charmap"
 )
 
 type SerialPrinter struct {
@@ -14,24 +16,37 @@ type SerialPrinter struct {
 	BaudRate int
 }
 
+// In CP_437
+var RESET_CHARSET = []byte{0x1B, 0x74, 0x00}
+
 // Jeux de caractères ESC/POS
 var charsets = [][]byte{
-	{0x1B, 0x74, 0x00}, // Charset 0 - Standard
+	RESET_CHARSET,
 	{0x1B, 0x74, 0x01}, // Charset 1 - Alternative
-	{0x1B, 0x74, 0x02}, // Charset 2 - Spécial
-	{0x1B, 0x74, 0x03}, // Charset 3 - Autre
-	{0x1B, 0x74, 0x04}, // Charset 4 - Japonais (Exemple)
-	{0x1B, 0x74, 0x00}, // Often, 0x00 selects CP437 in ESC/POS printers
+	// ... modifying last byte to vary charsets
 
 }
 
+// Commandes ESC/POS pour la taille du texte
+var (
+	resetPrinter  = []byte{0x1B, 0x40}       // Réinitialiser imprimante
+	setSmallText  = []byte{0x1B, 0x21, 0x00} // Texte Petit (1x)
+	setMediumText = []byte{0x1B, 0x21, 0x10} // Texte Moyen (2x hauteur)
+	setLargeText  = []byte{0x1B, 0x21, 0x20} // Texte Large (2x largeur)
+	setHugeText   = []byte{0x1B, 0x21, 0x30} // Texte Très Grand (2x hauteur et largeur)
+	setBoldOn     = []byte{0x1B, 0x45, 0x01} // Activer le texte en gras
+	setBoldOff    = []byte{0x1B, 0x45, 0x00} // Désactiver le texte en gras
+	newLine       = []byte{0x0A}             // Saut de ligne
+)
+
 // Implémentation pour envoyer sur l'imprimante série
-func (p *SerialPrinter) Print(buffer bytes.Buffer) error {
+func (p *SerialPrinter) Print(content string) error {
 	mode := &serial.Mode{BaudRate: p.BaudRate}
 
 	port, err := serial.Open(p.PortName, mode)
-	// Encoding cp437
-	buffer.Write(charsets[0])
+
+	buffer := parseMarkup(content)
+	buffer.Write(RESET_CHARSET)
 
 	if err != nil {
 		log.Println("Erreur ouverture port série:", err)
@@ -51,17 +66,6 @@ func (p *SerialPrinter) Print(buffer bytes.Buffer) error {
 
 func (p *SerialPrinter) TestPrint() error {
 	const serialPort = "/dev/ttyS0" // Change si nécessaire
-	// Commandes ESC/POS pour la taille du texte
-	var (
-		resetPrinter  = []byte{0x1B, 0x40}       // Réinitialiser imprimante
-		setSmallText  = []byte{0x1B, 0x21, 0x00} // Texte Petit (1x)
-		setMediumText = []byte{0x1B, 0x21, 0x10} // Texte Moyen (2x hauteur)
-		setLargeText  = []byte{0x1B, 0x21, 0x20} // Texte Large (2x largeur)
-		setHugeText   = []byte{0x1B, 0x21, 0x30} // Texte Très Grand (2x hauteur et largeur)
-		setBoldOn     = []byte{0x1B, 0x45, 0x01} // Activer le texte en gras
-		setBoldOff    = []byte{0x1B, 0x45, 0x00} // Désactiver le texte en gras
-		newLine       = []byte{0x0A}             // Saut de ligne
-	)
 
 	mode := &serial.Mode{
 		BaudRate: 9600,
@@ -130,4 +134,25 @@ func (p *SerialPrinter) TestPrint() error {
 	// Pause pour éviter d'envoyer trop rapidement
 	time.Sleep(1 * time.Second)
 	return nil
+}
+
+func parseMarkup(content string) bytes.Buffer {
+	var buffer bytes.Buffer
+
+	lines := strings.Split(content, "\n")
+	encoder := charmap.CodePage437.NewEncoder()
+
+	// TODO: add markup parsing (maybe with markdown)
+	for _, line := range lines {
+		encodedLine, err := encoder.String(line)
+		if err != nil {
+			// Handle encoding error here. For simplicity, encoding error is ignored
+			// But in production, consider handling encoding errors properly
+			encodedLine = line // Fallback to original line on error
+		}
+		buffer.WriteString(encodedLine + "\n")
+
+	}
+
+	return buffer
 }

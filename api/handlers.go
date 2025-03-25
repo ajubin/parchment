@@ -1,16 +1,12 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/ajubin/parchment/types"
-	"golang.org/x/text/encoding/charmap"
 )
 
 func (s *Server) handleTestPrint(w http.ResponseWriter, r *http.Request) {
@@ -51,9 +47,7 @@ func (s *Server) handlePrint(w http.ResponseWriter, r *http.Request) {
 
 	cleanContent := SanitizeMarkdown(req.Content)
 
-	buffer := parseMarkup(cleanContent)
-
-	err = s.printer.Print(buffer)
+	err = s.printer.Print(cleanContent)
 	if err != nil {
 		http.Error(w, "Erreur lors de l'impression", http.StatusInternalServerError)
 		return
@@ -62,25 +56,4 @@ func (s *Server) handlePrint(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(types.Response{Message: "ok"})
 
-}
-
-func parseMarkup(content string) bytes.Buffer {
-	var buffer bytes.Buffer
-
-	lines := strings.Split(content, "\n")
-	encoder := charmap.CodePage437.NewEncoder()
-
-	// TODO: add markup parsing (maybe with markdown)
-	for _, line := range lines {
-		encodedLine, err := encoder.String(line)
-		if err != nil {
-			// Handle encoding error here. For simplicity, encoding error is ignored
-			// But in production, consider handling encoding errors properly
-			encodedLine = line // Fallback to original line on error
-		}
-		buffer.WriteString(encodedLine + "\n")
-
-	}
-
-	return buffer
 }
