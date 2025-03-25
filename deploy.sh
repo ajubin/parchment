@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Fail on error
+set -e
+
+
 SERVICE_NAME="parchment"
 DEPLOY_DIR="/home/pi/printer-serial"
 USER="pi"
@@ -8,7 +12,9 @@ PI_SERVER_ADDR=${USER}@${HOST}
 SERVICE_PATH="/etc/systemd/system/${SERVICE_NAME}.service"
 
 source .env
-echo "API USER ${API_USER}"
+echo "testing before deploying"
+make test
+
 echo "🚀 Deploying ${SERVICE_NAME} to Raspberry Pi (${HOST})..."
 
 rsync -avz --exclude '.git' --exclude 'deploy.sh' --exclude 'assets' . ${PI_SERVER_ADDR}:${DEPLOY_DIR}
