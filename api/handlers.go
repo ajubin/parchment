@@ -1,12 +1,10 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/ajubin/parchment/types"
 )
@@ -49,9 +47,7 @@ func (s *Server) handlePrint(w http.ResponseWriter, r *http.Request) {
 
 	cleanContent := SanitizeMarkdown(req.Content)
 
-	buffer := parseMarkup(cleanContent)
-
-	err = s.printer.Print(buffer)
+	err = s.printer.Print(cleanContent)
 	if err != nil {
 		http.Error(w, "Erreur lors de l'impression", http.StatusInternalServerError)
 		return
@@ -60,18 +56,4 @@ func (s *Server) handlePrint(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(types.Response{Message: "ok"})
 
-}
-
-func parseMarkup(content string) bytes.Buffer {
-	var buffer bytes.Buffer
-
-	lines := strings.Split(content, "\n")
-
-	// TODO: add markup parsing (maybe with markdown)
-	for _, line := range lines {
-		buffer.WriteString(line + "\n") // Texte normal
-
-	}
-
-	return buffer
 }
